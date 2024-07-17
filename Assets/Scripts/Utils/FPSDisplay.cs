@@ -21,7 +21,7 @@ public class FPSDisplay : MonoBehaviour
         rect = new Rect(0, 0, w, h * 2 / 100);
         style = new GUIStyle();
         style.alignment = TextAnchor.UpperLeft;
-        style.fontSize = h * 2 / 100;
+        style.fontSize = h * 3 / 100;
         style.normal.textColor = Color.white;
     }
 
@@ -32,7 +32,7 @@ public class FPSDisplay : MonoBehaviour
 
     void OnGUI()
     {
-        string text = string.Format("Avg: {0} fps", (int)currentFPS);
+        string text = string.Format("{0} fps", (int)currentFPS);
         GUI.Label(rect, text, style);
     }
 }
