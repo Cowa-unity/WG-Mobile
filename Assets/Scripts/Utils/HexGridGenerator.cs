@@ -27,8 +27,8 @@ public class HexagonTerrainGenerator : MonoBehaviour
     public float adjustmentFactor;
     private Dictionary<(int, int), int[]> terrainGrid;
     private float hexSize;
-    private float horizontalSpacing = 1.5f;
-    private float verticalSpacing = 1.732f;
+    private float horizontalSpacing = 1.496f;
+    private float verticalSpacing = 1.726f;
     private float plainFocusPercent, forestFocusPercent, waterFocusPercent;
     private int plainCount, sandCount, forestCount, waterCount;
     private bool isGenerating = false;
@@ -115,7 +115,6 @@ public class HexagonTerrainGenerator : MonoBehaviour
 
         RefineHeight();
 
-        //SpawnAnimal();
         Debug.Log("Plains: " + plainCount + ", Forests: " + forestCount + ", Water: " + waterCount + ", Sand: " + sandCount);
         Debug.Log("Plaines: " + (float)((plainCount / 576.0f) * 100) + "% " + "Forets: " + (float)((forestCount / 576.0f) * 100) + "% " + " " + "Eau: " + (float)((waterCount / 576.0f) * 100) + "% " + " " + "Sable: " + (float)((sandCount / 576.0f) * 100) + "% " + " ");
         yield return null;

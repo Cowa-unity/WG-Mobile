@@ -13,7 +13,8 @@ TagManager:
   - Trees
   - Slider
   - SoundSystem
-  - CheckBox
+  - CheckBoxMovement
+  - CheckBoxRotation
   layers:
   - Default
   - TransparentFX

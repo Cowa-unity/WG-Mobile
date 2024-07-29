@@ -7,6 +7,7 @@ public class Checkbox : MonoBehaviour
 {
     public CameraController cameraController;
     public Image Image;
+    public string type;
 
     void Update()
     {
@@ -20,8 +21,29 @@ public class Checkbox : MonoBehaviour
                     if (RectTransformUtility.RectangleContainsScreenPoint(Image.GetComponent<RectTransform>(), touch.position))
                     {
                         Image.enabled = !Image.enabled;
-                        if(Image.enabled){ cameraController.alternativeControls = -1;}
-                        else if(!Image.enabled){ cameraController.alternativeControls = 1;}
+                        if(Image.enabled)
+                        { 
+                            if(type == "movement")
+                            {
+                                cameraController.reversedMovement = -1;
+                            }
+                            else if(type == "rotation")
+                            {
+                                cameraController.reversedRotation = -1;
+                            }
+                            
+                        }
+                        else if(!Image.enabled)
+                        { 
+                            if(type == "movement")
+                            {
+                                cameraController.reversedMovement = 1;
+                            }
+                            else if(type == "rotation")
+                            {
+                                cameraController.reversedRotation = 1;
+                            }
+                        }
                     }
                 }
             }

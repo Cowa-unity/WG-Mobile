@@ -15,7 +15,7 @@ public class FPSDisplay : MonoBehaviour
         screenWidth = Screen.currentResolution.width;
         screenHeight = Screen.currentResolution.height;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
-        Application.targetFrameRate = 120;
+        Application.targetFrameRate = 60;
 
         int w = Screen.width, h = Screen.height;
         rect = new Rect(0, 0, w, h * 2 / 100);
@@ -32,6 +32,18 @@ public class FPSDisplay : MonoBehaviour
 
     void OnGUI()
     {
+        if(screenWidth != Screen.currentResolution.width)
+        {
+            screenWidth = Screen.currentResolution.width;
+            screenHeight = Screen.currentResolution.height;
+
+            int w = Screen.width, h = Screen.height;
+            rect = new Rect(0, 0, w, h * 2 / 100);
+            style = new GUIStyle();
+            style.alignment = TextAnchor.UpperLeft;
+            style.fontSize = h * 3 / 100;
+            style.normal.textColor = Color.white;
+        }
         string text = string.Format("{0} fps", (int)currentFPS);
         GUI.Label(rect, text, style);
     }

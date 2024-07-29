@@ -18,14 +18,13 @@ public class CameraController : MonoBehaviour
     public GameObject optionsButton;
     public GameObject optionsMenu;
     public GameObject regenerationButton;
-    public int alternativeControls = 1;
+    public int reversedMovement = 1;
+    public int reversedRotation = 1;
     public bool isPause = false;
     
     public float maxMovementSpeed = 200;
     public float maxRotationSpeed = 200;
     public float maxZoomSpeed = 200;
-    private Vector2 posOriginMovement;
-    private Vector2 posOriginRotation;
 
     void Start()
     {
@@ -55,8 +54,12 @@ public class CameraController : MonoBehaviour
                     }
                     zoomInButton.GetComponent<Image>().enabled = !isPause;
                     zoomInButton.transform.GetChild(0).GetComponent<Image>().enabled = !isPause;
-                    zoomOutButton.GetComponent<Image>().enabled = !isPause;
                     zoomOutButton.transform.GetChild(0).GetComponent<Image>().enabled = !isPause;
+                    zoomOutButton.GetComponent<Image>().enabled = !isPause;
+                    rotateLeft.GetComponent<Image>().enabled = !isPause;
+                    rotateRight.GetComponent<Image>().enabled = !isPause;
+                    joystickMovementBg.GetComponent<Image>().enabled = !isPause;
+                    regenerationButton.transform.parent.GetComponent<Image>().enabled = !isPause;
                     regenerationButton.GetComponent<TMP_Text>().enabled = !isPause;
                     EnableImageAndTextRecursively(optionsMenu.transform, isPause);
                 }
@@ -73,12 +76,12 @@ public class CameraController : MonoBehaviour
                 }
                 else if (RectTransformUtility.RectangleContainsScreenPoint(rotateLeft.GetComponent<RectTransform>(), touch.position))
                 {
-                    float rotateAmountY = -rotationSpeed * alternativeControls * Time.deltaTime;
+                    float rotateAmountY = -rotationSpeed * reversedRotation * Time.deltaTime;
                     transform.Rotate(Vector3.up, rotateAmountY, Space.World);
                 }
                 else if (RectTransformUtility.RectangleContainsScreenPoint(rotateRight.GetComponent<RectTransform>(), touch.position))
                 {
-                    float rotateAmountY = rotationSpeed * alternativeControls * Time.deltaTime;
+                    float rotateAmountY = rotationSpeed * reversedRotation * Time.deltaTime;
                     transform.Rotate(Vector3.up, rotateAmountY, Space.World);
                 }
                 else if (RectTransformUtility.RectangleContainsScreenPoint(joystickMovementBg.GetComponent<RectTransform>(), touch.position))
@@ -95,7 +98,7 @@ public class CameraController : MonoBehaviour
                         cameraRight.y = 0; 
                         cameraRight.Normalize();
 
-                        Vector3 direction = (cameraRight * move.x * alternativeControls + cameraForward * move.z * alternativeControls).normalized;
+                        Vector3 direction = (cameraRight * move.x * reversedMovement + cameraForward * move.z * reversedMovement).normalized;
                         
                         Vector3 newPosition = transform.position + direction * movementSpeed * Time.deltaTime;
                         newPosition.x = Mathf.Clamp(newPosition.x, -25f, 225f);
@@ -110,7 +113,7 @@ public class CameraController : MonoBehaviour
 
     public void EnableImageAndTextRecursively(Transform parentTransform, bool enable)
     {
-        if(parentTransform.CompareTag("CheckBox"))
+        if(parentTransform.CompareTag("CheckBoxMovement"))
         {
             if(!enable)
             {
@@ -120,7 +123,26 @@ public class CameraController : MonoBehaviour
                     imageComponent.enabled = enable;
                 }
             }
-            else if(alternativeControls == -1)
+            else if(reversedMovement == -1)
+            {
+                Image imageComponent = parentTransform.GetComponent<Image>();
+                if (imageComponent != null)
+                {
+                    imageComponent.enabled = true;
+                }
+            }
+        }
+        else if(parentTransform.CompareTag("CheckBoxRotation"))
+        {
+            if(!enable)
+            {
+                Image imageComponent = parentTransform.GetComponent<Image>();
+                if (imageComponent != null)
+                {
+                    imageComponent.enabled = enable;
+                }
+            }
+            else if(reversedRotation == -1)
             {
                 Image imageComponent = parentTransform.GetComponent<Image>();
                 if (imageComponent != null)
@@ -154,32 +176,24 @@ public class CameraController : MonoBehaviour
 
     public void Zoom(bool isZooming)
     {
-        Vector3 cameraDirection = transform.forward;
-        Vector3 move = cameraDirection;
-        if(isZooming)
-        {
-            move *= 1;
-        } 
-        else
-        {
-            move *= -1;
-        }
-        
-        Vector3 direction = move.normalized;
+        float directionFactor = isZooming ? 1f : -1f;
+        Vector3 moveDirection = transform.forward * directionFactor;
+        Vector3 newPosition = transform.position + moveDirection * zoomSpeed * Time.deltaTime;
+        newPosition.y = Mathf.Clamp(newPosition.y, 50f, 130f);
+        transform.position = new Vector3(transform.position.x, newPosition.y, transform.position.z);
 
-        Vector3 newPosition = transform.position + direction * zoomSpeed * Time.deltaTime;
-        newPosition.x = Mathf.Clamp(newPosition.x, -25f, 225f);
+        float minY = 50f;
+        float maxY = 130f;
+        float minRotationX = 35f;
+        float maxRotationX = 55f;
 
-        if (newPosition.y < 50f || newPosition.y > 200f)
-        {
-            newPosition.x = transform.position.x;
-            newPosition.z = transform.position.z;
-        }
+        float t = (newPosition.y - minY) / (maxY - minY); 
+        float newRotationX = Mathf.Lerp(minRotationX, maxRotationX, t);
 
-        newPosition.y = Mathf.Clamp(newPosition.y, 50f, 200f);
-        newPosition.z = Mathf.Clamp(newPosition.z, -30f, 255f);
-
-        transform.position = newPosition;
+        Vector3 newRotation = transform.eulerAngles;
+        newRotation.x = newRotationX;
+        transform.eulerAngles = newRotation;
     }
+
 
 }
