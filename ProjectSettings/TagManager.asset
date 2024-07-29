@@ -15,6 +15,10 @@ TagManager:
   - SoundSystem
   - CheckBoxMovement
   - CheckBoxRotation
+  - Bullet
+  - Player1
+  - Player2
+  - PlayerManager
   layers:
   - Default
   - TransparentFX
